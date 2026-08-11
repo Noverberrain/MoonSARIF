@@ -156,7 +156,7 @@ def build_pdf() -> None:
             ),
             Paragraph("GitLink", styles["table_key"]),
             Paragraph(
-                "拟用 gitlink.org.cn/Wyc060514/moonsarif（创建后核验）",
+                "gitlink.org.cn/Wyc060514/moonsarif",
                 styles["table_value"],
             ),
         ],

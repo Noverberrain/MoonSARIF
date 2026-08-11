@@ -7,7 +7,7 @@
 - **项目方向：** MoonBit 开源生态基础库与开发工具
 - **开源许可证：** Apache-2.0
 - **GitHub：** https://github.com/Noverberrain/MoonSARIF
-- **GitLink：** 拟使用 `https://gitlink.org.cn/Wyc060514/moonsarif`，仓库创建后核验
+- **GitLink：** https://gitlink.org.cn/Wyc060514/moonsarif
 - **项目性质：** 原创项目，不基于其他项目源码移植
 
 ## 二、项目简介与应用场景
