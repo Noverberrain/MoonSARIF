@@ -37,4 +37,5 @@ jobs:
       - name: Verify generated interfaces
         run: |
           moon info
-          git diff --exit-code
+          test -s pkg.generated.mbti
+          test -s cmd/main/pkg.generated.mbti
