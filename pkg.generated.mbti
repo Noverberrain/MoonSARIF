@@ -1,0 +1,146 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "Noverberrain/moonsarif"
+
+import {
+  "moonbitlang/core/debug",
+  "moonbitlang/core/json",
+}
+
+// Values
+pub fn filter_results(SarifLog, level? : String, rule_id? : String, path_contains? : String) -> SarifLog
+
+pub fn merge(ArrayView[SarifLog]) -> SarifLog?
+
+pub fn normalize_path(StringView) -> String
+
+pub fn parse(StringView) -> SarifLog raise
+
+pub fn stringify(SarifLog, pretty? : Bool) -> String
+
+pub fn summarize(SarifLog) -> SarifSummary
+
+pub fn validate(SarifLog) -> ValidationReport
+
+// Errors
+
+// Types and methods
+pub struct ArtifactContent {
+  text : String?
+  binary : String?
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub struct ArtifactLocation {
+  uri : String?
+  uriBaseId : String?
+  index : Int?
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub enum IssueSeverity {
+  IssueError
+  IssueWarning
+} derive(Eq, ToJson, @debug.Debug)
+
+pub struct Location {
+  physicalLocation : PhysicalLocation?
+  message : Message?
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub struct Message {
+  text : String?
+  markdown : String?
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub struct PhysicalLocation {
+  artifactLocation : ArtifactLocation?
+  region : Region?
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub struct Region {
+  startLine : Int?
+  startColumn : Int?
+  endLine : Int?
+  endColumn : Int?
+  snippet : ArtifactContent?
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub struct ReportingDescriptor {
+  id : String
+  name : String?
+  shortDescription : Message?
+  fullDescription : Message?
+  helpUri : String?
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub struct Run {
+  tool : Tool
+  results : Array[SarifResult]?
+  automationDetails : RunAutomationDetails?
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub struct RunAutomationDetails {
+  id : String?
+  guid : String?
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub struct SarifLog {
+  version : String
+  schema : String?
+  runs : Array[Run]
+} derive(Eq, @debug.Debug)
+pub impl ToJson for SarifLog
+pub impl @json.FromJson for SarifLog
+
+pub struct SarifResult {
+  ruleId : String?
+  ruleIndex : Int?
+  level : String?
+  message : Message
+  locations : Array[Location]?
+  partialFingerprints : Map[String, String]?
+  baselineState : String?
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub struct SarifSummary {
+  run_count : Int
+  result_count : Int
+  error_count : Int
+  warning_count : Int
+  note_count : Int
+  none_count : Int
+  unknown_level_count : Int
+  unique_rule_count : Int
+} derive(Eq, ToJson, @debug.Debug)
+
+pub struct Tool {
+  driver : ToolComponent
+  extensions : Array[ToolComponent]?
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub struct ToolComponent {
+  name : String
+  version : String?
+  semanticVersion : String?
+  informationUri : String?
+  rules : Array[ReportingDescriptor]?
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub struct ValidationIssue {
+  severity : IssueSeverity
+  code : String
+  path : String
+  message : String
+} derive(Eq, ToJson, @debug.Debug)
+
+pub struct ValidationReport {
+  issues : Array[ValidationIssue]
+} derive(Eq, ToJson, @debug.Debug)
+pub fn ValidationReport::error_count(Self) -> Int
+pub fn ValidationReport::is_valid(Self) -> Bool
+pub fn ValidationReport::warning_count(Self) -> Int
+
+type WireSarifLog derive(@json.FromJson)
+
+// Type aliases
+
+// Traits
+
