@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "MoonLint",
+          "version": "1.0.0",
+          "informationUri": "https://example.com/moonlint",
+          "rules": [
+            {
+              "id": "MB001",
+              "shortDescription": {
+                "text": "Avoid unsafe calls"
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "MB001",
+          "level": "warning",
+          "message": {
+            "text": "unsafe call may panic"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/main.mbt"
+                },
+                "region": {
+                  "startLine": 12,
+                  "startColumn": 3
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "example-001"
+          }
+        }
+      ]
+    }
+  ]
+}
