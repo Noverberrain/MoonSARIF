@@ -151,7 +151,7 @@ def build_pdf() -> None:
         [
             Paragraph("GitHub", styles["table_key"]),
             Paragraph(
-                "拟用 github.com/Noverberrain/MoonSARIF（创建后核验）",
+                "github.com/Noverberrain/MoonSARIF",
                 styles["table_value"],
             ),
             Paragraph("GitLink", styles["table_key"]),
