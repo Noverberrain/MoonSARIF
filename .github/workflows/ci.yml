@@ -25,6 +25,9 @@ jobs:
       - name: Show toolchain
         run: moon version --all
 
+      - name: Resolve MoonBit dependencies
+        run: moon update
+
       - name: Check all stable backends
         run: moon check --target all --deny-warn --warn-list +73
 
