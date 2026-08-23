@@ -160,6 +160,12 @@ def build_pdf() -> None:
                 styles["table_value"],
             ),
         ],
+        [
+            Paragraph("Mooncakes", styles["table_key"]),
+            Paragraph("mooncakes.io/docs/Noverberrain/moonsarif · 0.3.0", styles["table_value"]),
+            Paragraph("发布状态", styles["table_key"]),
+            Paragraph("已发布", styles["table_value"]),
+        ],
     ]
     table = Table(
         info,
@@ -206,14 +212,14 @@ def build_pdf() -> None:
     story.append(
         section(
             "四、技术路线与实施计划",
-            "采用“类型模型 → JSON 编解码 → 语义校验 → 统计/筛选/合并 → 指纹/去重/baseline → 报告渲染 → CLI 适配”分层架构。当前版本已完成核心闭环、CI baseline 门禁、GitHub 兼容性检查、可留档报告、CLI 回归测试和小型性能基准；后续根据验收反馈补充更多 SARIF 字段、平台兼容规则、流式处理和 Mooncakes 发布评估。",
+            "采用“类型模型 → JSON 编解码 → 语义校验 → 统计/筛选/合并 → 指纹/去重/baseline → 报告渲染 → CLI 适配”分层架构。当前版本已完成核心闭环、CI baseline 门禁、GitHub 兼容性检查、可留档报告、CLI 回归测试和小型性能基准；后续根据验收反馈补充更多 SARIF 字段、平台兼容规则、流式处理和 Mooncakes 包维护。",
             styles,
         )
     )
     story.append(
         section(
             "五、预期交付成果",
-            "本阶段交付可复用 MoonBit 包、文件型 CLI、Markdown/HTML 报告、baseline CI 门禁、GitHub Code Scanning 兼容性检查、常用 SARIF 结果字段、示例与 API/架构/兼容性文档、CLI 回归测试、小型性能基准、贡献与安全策略、跨后端测试与 CI、GitHub/GitLink 双仓库及申报书 Markdown/PDF。WebAssembly 在线查看器、流式大文件处理和 Mooncakes 发布不列为本版本已完成承诺。",
+            "本阶段交付可复用 MoonBit 包、文件型 CLI、Markdown/HTML 报告、baseline CI 门禁、GitHub Code Scanning 兼容性检查、常用 SARIF 结果字段、示例与 API/架构/兼容性文档、CLI 回归测试、小型性能基准、贡献与安全策略、跨后端测试与 CI、GitHub/GitLink 双仓库及申报书 Markdown/PDF。WebAssembly 在线查看器和流式大文件处理不列为本版本已完成承诺。",
             styles,
         )
     )

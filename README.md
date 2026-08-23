@@ -4,6 +4,7 @@
 
 - GitHub：[Noverberrain/MoonSARIF](https://github.com/Noverberrain/MoonSARIF)
 - GitLink：[Wyc060514/moonsarif](https://gitlink.org.cn/Wyc060514/moonsarif)
+- Mooncakes：[Noverberrain/moonsarif](https://mooncakes.io/docs/Noverberrain/moonsarif)
 - 许可证：Apache-2.0
 
 ## 项目定位
@@ -65,7 +66,7 @@ CI 还会运行 `tests/cli_smoke.sh` 和 `tools/benchmark.py --results 1000`。
 - [ ] 更多 SARIF 可选字段与官方样例覆盖
 - [ ] 更细粒度的平台兼容规则和真实上传回归
 - [ ] 流式处理与大文件优化评估
-- [ ] Mooncakes 发布评估
+- [x] Mooncakes 发布 `Noverberrain/moonsarif@0.3.0`
 
 ## 开源与 AI 使用说明
 

@@ -9,6 +9,7 @@
 - **开源许可证：** Apache-2.0
 - **GitHub：** https://github.com/Noverberrain/MoonSARIF
 - **GitLink：** https://gitlink.org.cn/Wyc060514/moonsarif
+- **Mooncakes：** https://mooncakes.io/docs/Noverberrain/moonsarif
 - **项目性质：** 原创项目，不基于其他项目源码移植
 
 ## 二、项目简介与应用场景
@@ -52,13 +53,13 @@ MoonSARIF 是使用 MoonBit 原创实现的 SARIF 2.1.0 解析、校验、筛选
 - wasm、wasm-gc、JavaScript、native 四个稳定后端检查与测试；
 - GitHub Actions 格式、严格检查、测试和公共接口生成验证。
 
-项目已建立 GitHub 与 GitLink 双仓库，代码、文档、示例和申报书均纳入版本管理。仓库中的公开接口以 `moon info` 生成文件为准，后续兼容性变更会同步记录在变更日志中。
+项目已建立 GitHub 与 GitLink 双仓库，并发布 `Noverberrain/moonsarif@0.3.0` 至 Mooncakes；代码、文档、示例和申报书均纳入版本管理。仓库中的公开接口以 `moon info` 生成文件为准，后续兼容性变更会同步记录在变更日志中。
 
 ## 五、技术路线与交付边界
 
 项目采用“类型模型 → JSON 编解码 → 语义校验 → 统计/筛选/合并 → 指纹/去重/baseline → 报告渲染 → CLI 适配”的分层架构。核心库不依赖操作系统文件 API，因此可复用于 wasm、wasm-gc、JavaScript 和 native；CLI 文件读写主要面向 native 宿主环境。
 
-当前版本的明确边界是：它不是完整 JSON Schema 引擎，不声称覆盖 SARIF 的全部可选字段和平台私有扩展，也不替代 GitHub 等平台的官方校验器。当前指纹以结果规则、首个物理位置和消息为基础；兼容性检查覆盖常见上传前问题，不等同于真实平台上传测试。在线查看器、流式处理和 Mooncakes 发布属于后续版本评估事项，不作为本版本已完成能力进行承诺。
+当前版本的明确边界是：它不是完整 JSON Schema 引擎，不声称覆盖 SARIF 的全部可选字段和平台私有扩展，也不替代 GitHub 等平台的官方校验器。当前指纹以结果规则、首个物理位置和消息为基础；兼容性检查覆盖常见上传前问题，不等同于真实平台上传测试。在线查看器和流式处理属于后续版本评估事项，不作为本版本已完成能力进行承诺。
 
 ## 六、预期交付成果
 
@@ -72,7 +73,7 @@ MoonSARIF 是使用 MoonBit 原创实现的 SARIF 2.1.0 解析、校验、筛选
 - GitHub/GitLink 开源仓库及可复核提交历史；
 - 本申报书 Markdown 与 PDF 文件。
 
-后续可在验收反馈基础上继续补充更多 SARIF 字段、平台兼容性规则、流式处理/大文件优化和 Mooncakes 发布包。
+后续可在验收反馈基础上继续补充更多 SARIF 字段、平台兼容性规则和流式处理/大文件优化。
 
 ## 七、原创性、开源合规与 AI 使用说明
 
