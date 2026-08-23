@@ -1,33 +1,33 @@
 # MoonSARIF
 
-纯 MoonBit 实现的 SARIF 2.1.0 解析、校验、筛选、合并与报告工具链。
+纯 MoonBit 实现的 SARIF 2.1.0 解析、校验、筛选、合并、去重与基线比较工具链。
 
-> 当前状态：早期开发版本。核心类型模型、JSON 往返、语义校验、统计、筛选和合并 API 已可使用。
+- GitHub：[Noverberrain/MoonSARIF](https://github.com/Noverberrain/MoonSARIF)
+- GitLink：[Wyc060514/moonsarif](https://gitlink.org.cn/Wyc060514/moonsarif)
+- 许可证：Apache-2.0
 
-## 为什么做 MoonSARIF
+## 项目定位
 
-SARIF（Static Analysis Results Interchange Format）是静态分析结果的标准交换格式。MoonSARIF 希望为 MoonBit 静态分析器、CI、代码扫描平台和 AI Agent 提供一套可复用、跨后端的基础设施。
+MoonSARIF 面向 MoonBit 静态分析器、CI/CD、代码扫描平台和 AI 编程 Agent，提供一套可复用的 SARIF 领域模型与工程工具。它不是通用 JSON Schema 验证器，而是针对 SARIF 工作流提供：
 
-项目重点不是再做一个通用 JSON 解析器，而是解决 SARIF 工程流程中的具体问题：
+- 2.1.0 核心类型和 JSON 往返；
+- 版本、工具、规则、结果、消息和位置的语义校验；
+- 结果统计、按等级/规则/路径筛选；
+- 跨 Windows/Linux 路径归一化；
+- 多日志合并；
+- 确定性结果指纹、同日志去重；
+- 当前日志与历史 baseline 的 new/unchanged/absent 对比；
+- 文件型 CLI，便于接入 CI。
 
-- 上传代码扫描平台前发现格式和语义错误；
-- 合并多个扫描器或多个分片产生的报告；
-- 按严重等级、规则和路径筛选结果；
-- 生成稳定摘要并支持后续 baseline 对比；
-- 为 MoonBit 工具输出标准化扫描结果提供类型模型。
+## 当前状态
 
-## 已实现
+当前版本为 **0.1.0 验收候选版**。核心库和 CLI 已完成第一轮闭环，支持 wasm、wasm-gc、JavaScript、native 四个稳定后端的检查与测试；文件读写 CLI 主要面向 native 环境，库本身保持跨后端设计。
 
-- SARIF 2.1.0 核心类型模型；
-- JSON 解析、序列化及 `$schema` 字段保留；
-- 版本、工具、规则、结果、消息和位置语义校验；
-- error/warning/note/none 分类统计；
-- 按 level、ruleId、路径筛选；
-- Windows/Linux artifact 路径归一化；
-- 多个同版本 SARIF 日志合并；
-- wasm、wasm-gc、JavaScript、native 全后端检查与测试。
+项目明确不承诺覆盖 SARIF 规范的所有可选字段，也不替代平台官方的完整 JSON Schema 校验器。对未建模字段，解析时会按当前公开 API 范围处理；提交到具体平台前，仍建议执行平台侧校验。
 
 ## 快速开始
+
+### 库 API
 
 ```mbt check
 ///|
@@ -45,34 +45,67 @@ test {
     #|  }]
     #|}
   let log = @moonsarif.parse(input)
+  let report = @moonsarif.validate(log)
   let summary = @moonsarif.summarize(log)
+  assert_true(report.is_valid())
   assert_eq(summary.result_count, 1)
-  assert_eq(summary.warning_count, 1)
 }
 ```
 
-## 常用命令
+### CLI
 
 ```bash
+# 检查 SARIF；发现结构/语义错误时退出码为 1
+moon run cmd/main -- validate examples/sample.sarif
+
+# 输出统计摘要
+moon run cmd/main -- summary examples/sample.sarif --pretty
+
+# 筛选 warning，支持 rule/path 条件
+moon run cmd/main -- filter examples/sample.sarif \
+  --level warning --path src/main.mbt --output filtered.sarif
+
+# 合并多个同版本日志
+moon run cmd/main -- merge first.sarif second.sarif --output merged.sarif
+
+# 删除同一日志中的重复结果
+moon run cmd/main -- deduplicate merged.sarif --output unique.sarif
+
+# 比较当前结果与历史 baseline
+moon run cmd/main -- baseline current.sarif baseline.sarif
+```
+
+CLI 退出码：`0` 表示成功，`1` 表示校验发现 SARIF 错误，`2` 表示命令参数、文件读写或解析错误。CLI 的错误信息当前写入标准输出，以便在不同宿主和后端中保持一致；自动化脚本应以退出码为准。
+
+## 验证
+
+```bash
+moon fmt
 moon check --target all --deny-warn --warn-list +73
 moon test --target all --deny-warn
-moon run cmd/main -- help
 moon info
 ```
 
-## 路线图
+GitHub Actions 会执行格式检查、四个稳定后端的检查/测试以及公共接口生成检查。
 
-- [x] 核心类型模型与 JSON 往返
-- [x] 基础语义校验
-- [x] 统计、筛选与合并
-- [ ] 文件型 CLI：`validate`、`summary`、`filter`、`merge`
-- [ ] 结果去重与稳定指纹
-- [ ] baseline 新增/消失/未变化对比
-- [ ] GitHub Code Scanning 兼容性检查
-- [ ] Markdown/HTML 报告
-- [ ] WebAssembly 在线查看器
+## 文档
 
-架构和后续设计见 `docs/ARCHITECTURE.md`。
+- [架构说明](docs/ARCHITECTURE.md)
+- [贡献指南](CONTRIBUTING.md)
+- [安全策略](SECURITY.md)
+- [变更记录](CHANGELOG.md)
+- [初审项目申报书](docs/MoonSARIF-初审申报书.md)
+
+## 后续计划
+
+- 补充更多 SARIF 可选字段与官方样例覆盖；
+- 增加 Markdown/HTML 报告输出；
+- 增加大文件性能基准和更细粒度的 GitHub Code Scanning 兼容性检查；
+- 根据 API 稳定性和赛事要求评估 Mooncakes 发布。
+
+## 开源与 AI 使用说明
+
+项目依据公开的 OASIS SARIF 2.1.0 标准进行原创 MoonBit 实现，不复制第三方实现源码。开发过程中使用 Codex 辅助需求整理、架构设计、实现、测试和文档；最终代码审核、提交、许可证合规和参赛责任由项目申报人承担。
 
 ## 许可证
 

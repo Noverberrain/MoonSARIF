@@ -29,6 +29,16 @@ jobs:
       - name: Test all stable backends
         run: moon test --target all --deny-warn
 
+      - name: Smoke test native CLI
+        run: |
+          moon run cmd/main -- version
+          moon run cmd/main -- validate examples/sample.sarif
+          moon run cmd/main -- summary examples/sample.sarif --pretty
+          moon run cmd/main -- filter examples/sample.sarif --level warning --output "$RUNNER_TEMP/filtered.sarif"
+          moon run cmd/main -- merge examples/sample.sarif examples/sample.sarif --output "$RUNNER_TEMP/merged.sarif"
+          moon run cmd/main -- deduplicate "$RUNNER_TEMP/merged.sarif" --output "$RUNNER_TEMP/unique.sarif"
+          moon run cmd/main -- baseline "$RUNNER_TEMP/unique.sarif" examples/sample.sarif
+
       - name: Verify formatting
         run: |
           moon fmt
