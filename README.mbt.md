@@ -149,12 +149,12 @@ GitHub Actions 会执行格式检查、四个稳定后端的检查/测试、CLI 
 - [变更记录](CHANGELOG.md)
 - [初审项目申报书](docs/MoonSARIF-初审申报书.md)
 
-## 后续计划
+## 版本完成情况与后续计划
 
-- 补充更多 SARIF 可选字段与官方样例覆盖；
-- 增加更细粒度的平台兼容规则和真实上传回归样例；
-- 评估流式解析/写出和大文件优化；
-- 已发布 `Noverberrain/moonsarif@0.4.0`；后续根据 API 稳定性和赛事要求持续维护。
+- [x] 覆盖当前版本所需的常用 SARIF 可选字段，并建立合法/非法 fixture 样例集；
+- [x] 提供 Generic、Github、Strict 校验 Profile、GitHub Code Scanning 兼容性检查和可复制的 GitHub Actions 上传示例；
+- [x] 完成 1000 条结果性能基准，并明确流式处理与大文件优化作为后续版本方向；
+- [x] 发布 `Noverberrain/moonsarif@0.4.0`；后续根据 API 稳定性和赛事要求持续维护。
 
 ## 开源与 AI 使用说明
 
