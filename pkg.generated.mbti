@@ -7,7 +7,13 @@ import {
 }
 
 // Values
+pub fn compare_baseline(SarifLog, SarifLog) -> BaselineReport
+
+pub fn deduplicate(SarifLog) -> SarifLog
+
 pub fn filter_results(SarifLog, level? : String, rule_id? : String, path_contains? : String) -> SarifLog
+
+pub fn fingerprint(SarifResult) -> String
 
 pub fn merge(ArrayView[SarifLog]) -> SarifLog?
 
@@ -34,6 +40,18 @@ pub struct ArtifactLocation {
   uriBaseId : String?
   index : Int?
 } derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub struct BaselineReport {
+  new_results : Int
+  unchanged_results : Int
+  absent_results : Int
+} derive(Eq, ToJson, @debug.Debug)
+
+pub enum BaselineState {
+  New
+  Unchanged
+  Absent
+} derive(Eq, ToJson, @debug.Debug)
 
 pub enum IssueSeverity {
   IssueError
