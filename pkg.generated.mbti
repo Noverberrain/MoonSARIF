@@ -7,6 +7,8 @@ import {
 }
 
 // Values
+pub fn annotate_baseline(SarifLog, SarifLog) -> SarifLog
+
 pub fn compare_baseline(SarifLog, SarifLog) -> BaselineReport
 
 pub fn deduplicate(SarifLog) -> SarifLog
@@ -20,6 +22,10 @@ pub fn merge(ArrayView[SarifLog]) -> SarifLog?
 pub fn normalize_path(StringView) -> String
 
 pub fn parse(StringView) -> SarifLog raise
+
+pub fn render_html(SarifLog) -> String
+
+pub fn render_markdown(SarifLog) -> String
 
 pub fn stringify(SarifLog, pretty? : Bool) -> String
 

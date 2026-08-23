@@ -146,7 +146,7 @@ def build_pdf() -> None:
             Paragraph("项目性质", styles["table_key"]),
             Paragraph("原创实现，不移植第三方源码", styles["table_value"]),
             Paragraph("当前基础", styles["table_key"]),
-            Paragraph("验收候选版 · 13 个库级测试", styles["table_value"]),
+            Paragraph("验收候选版 · 17 个库级测试", styles["table_value"]),
         ],
         [
             Paragraph("GitHub", styles["table_key"]),
@@ -199,21 +199,21 @@ def build_pdf() -> None:
     story.append(
         section(
             "三、核心功能与现有基础",
-            "已完成核心类型模型、JSON 往返与 <b>$schema</b> 保留、结构/语义校验、严重等级统计、按 level/rule/path 筛选、路径归一化、多日志合并、确定性指纹、去重、baseline 比较及文件型 CLI。13 个库级测试已在 wasm、wasm-gc、JavaScript、native 后端全部通过；CI 覆盖格式、严格检查、测试和公共接口一致性。",
+            "已完成核心类型模型、JSON 往返与 <b>$schema</b> 保留、结构/语义校验、严重等级统计、按 level/rule/path 筛选、路径归一化、多日志合并、确定性指纹、去重、baseline 比较、CI 门禁、baselineState 标注、Markdown/HTML 报告及文件型 CLI。17 个库级测试已在 wasm、wasm-gc、JavaScript、native 后端全部通过；CI 覆盖格式、严格检查、测试和公共接口一致性。",
             styles,
         )
     )
     story.append(
         section(
             "四、技术路线与实施计划",
-            "采用“类型模型 → JSON 编解码 → 语义校验 → 统计/筛选/合并 → 指纹/去重/baseline → CLI 适配”分层架构。当前版本完成核心闭环；后续根据验收反馈补充更多 SARIF 字段、平台兼容规则、Markdown/HTML 报告、性能基准和 Mooncakes 发布评估。",
+            "采用“类型模型 → JSON 编解码 → 语义校验 → 统计/筛选/合并 → 指纹/去重/baseline → 报告渲染 → CLI 适配”分层架构。当前版本已完成核心闭环、CI baseline 门禁和可留档报告；后续根据验收反馈补充更多 SARIF 字段、平台兼容规则、性能基准和 Mooncakes 发布评估。",
             styles,
         )
     )
     story.append(
         section(
             "五、预期交付成果",
-            "本阶段交付可复用 MoonBit 包、文件型 CLI、示例与 API/架构/兼容性文档、贡献与安全策略、跨后端测试与 CI、GitHub/GitLink 双仓库及申报书 Markdown/PDF。WebAssembly 在线查看器、性能报告和 Mooncakes 发布不列为本版本已完成承诺。",
+            "本阶段交付可复用 MoonBit 包、文件型 CLI、Markdown/HTML 报告、baseline CI 门禁、示例与 API/架构/兼容性文档、贡献与安全策略、跨后端测试与 CI、GitHub/GitLink 双仓库及申报书 Markdown/PDF。WebAssembly 在线查看器、性能报告和 Mooncakes 发布不列为本版本已完成承诺。",
             styles,
         )
     )

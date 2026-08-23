@@ -26,7 +26,8 @@ MoonSARIF 是使用 MoonBit 原创实现的 SARIF 2.1.0 解析、校验、筛选
 3. Windows/Linux artifact 路径归一化；
 4. 不依赖随机值、对象地址和数组序号的确定性结果指纹；
 5. 运行内去重、跨运行 baseline 的 new/unchanged/absent 统计；
-6. 可在 CI 中直接使用的 validate/summary/filter/merge/deduplicate/baseline CLI。
+6. 可在 CI 中直接使用的 validate/summary/filter/merge/deduplicate/baseline/report CLI；
+7. baselineState 标注与 Markdown/HTML 自包含报告，方便人工复核和流水线留档。
 
 ## 四、核心功能与现有基础
 
@@ -40,9 +41,11 @@ MoonSARIF 是使用 MoonBit 原创实现的 SARIF 2.1.0 解析、校验、筛选
 - 跨平台 artifact 路径归一化；
 - 同版本多日志合并；
 - 确定性 fingerprint、run 内 deduplicate；
-- baseline 新增、未变化、消失结果统计；
+- baseline 新增、未变化、消失结果统计及 CI 门禁；
+- `baselineState` 写回当前结果；
+- Markdown/HTML 自包含报告输出；
 - 文件型 CLI 和 `--output` 输出；
-- 13 个库级测试，覆盖解析、往返、校验、筛选、合并、路径、指纹、去重和 baseline；
+- 17 个库级测试，覆盖解析、往返、校验、筛选、合并、路径、指纹、去重、baseline 和报告；
 - wasm、wasm-gc、JavaScript、native 四个稳定后端检查与测试；
 - GitHub Actions 格式、严格检查、测试和公共接口生成验证。
 
@@ -50,9 +53,9 @@ MoonSARIF 是使用 MoonBit 原创实现的 SARIF 2.1.0 解析、校验、筛选
 
 ## 五、技术路线与交付边界
 
-项目采用“类型模型 → JSON 编解码 → 语义校验 → 统计/筛选/合并 → 指纹/去重/baseline → CLI 适配”的分层架构。核心库不依赖操作系统文件 API，因此可复用于 wasm、wasm-gc、JavaScript 和 native；CLI 文件读写主要面向 native 宿主环境。
+项目采用“类型模型 → JSON 编解码 → 语义校验 → 统计/筛选/合并 → 指纹/去重/baseline → 报告渲染 → CLI 适配”的分层架构。核心库不依赖操作系统文件 API，因此可复用于 wasm、wasm-gc、JavaScript 和 native；CLI 文件读写主要面向 native 宿主环境。
 
-当前版本的明确边界是：它不是完整 JSON Schema 引擎，不声称覆盖 SARIF 的全部可选字段和平台私有扩展，也不替代 GitHub 等平台的官方校验器。当前指纹以结果规则、首个物理位置和消息为基础；Markdown/HTML 报告、在线查看器、性能基准和 Mooncakes 发布属于后续版本评估事项，不作为本版本已完成能力进行承诺。
+当前版本的明确边界是：它不是完整 JSON Schema 引擎，不声称覆盖 SARIF 的全部可选字段和平台私有扩展，也不替代 GitHub 等平台的官方校验器。当前指纹以结果规则、首个物理位置和消息为基础；在线查看器、性能基准和 Mooncakes 发布属于后续版本评估事项，不作为本版本已完成能力进行承诺。
 
 ## 六、预期交付成果
 
@@ -66,7 +69,7 @@ MoonSARIF 是使用 MoonBit 原创实现的 SARIF 2.1.0 解析、校验、筛选
 - GitHub/GitLink 开源仓库及可复核提交历史；
 - 本申报书 Markdown 与 PDF 文件。
 
-后续可在验收反馈基础上继续补充更多 SARIF 字段、平台兼容性规则、Markdown/HTML 报告、性能基准和 Mooncakes 发布包。
+后续可在验收反馈基础上继续补充更多 SARIF 字段、平台兼容性规则、性能基准和 Mooncakes 发布包。
 
 ## 七、原创性、开源合规与 AI 使用说明
 

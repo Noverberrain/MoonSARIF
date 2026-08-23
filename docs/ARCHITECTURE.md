@@ -9,7 +9,8 @@ MoonSARIF 采用“类型模型 + 纯函数工具链 + CLI 适配层”的结构
 - `validation.mbt`：结构与语义校验，输出机器可读的问题列表。
 - `summary.mbt`：统计、筛选与多日志合并。
 - `path.mbt`：跨平台 artifact URI/路径归一化。
-- `identity.mbt`：结果消息/位置归一化、确定性指纹、去重和 baseline 比较。
+- `identity.mbt`：结果消息/位置归一化、确定性指纹、去重、baseline 比较和 `baselineState` 标注。
+- `report.mbt`：Markdown/HTML 报告渲染与安全转义。
 - `cmd/main`：命令行适配层，负责参数、文件、输出和退出码，不重复实现领域逻辑。
 
 ## 数据流
@@ -24,8 +25,9 @@ fs.read_file_to_string
 parse ──► SarifLog ──► validate / summarize / filter / merge
                             │
                             ├─► fingerprint / deduplicate
-                            ├─► compare_baseline
-                            └─► stringify / JSON report / output file
+                            ├─► compare_baseline / annotate_baseline
+                            ├─► render_markdown / render_html
+                            └─► stringify / output file
 ```
 
 ## CLI 命令
@@ -35,7 +37,8 @@ parse ──► SarifLog ──► validate / summarize / filter / merge
 - `filter <file>`：按 `--level`、`--rule`/`--rule-id`、`--path` 筛选，并保留工具元数据。
 - `merge <file>...`：仅合并相同 SARIF 版本的日志，按输入顺序拼接 runs。
 - `deduplicate <file>`：对每个 run 保留首次出现的结果指纹。
-- `baseline <current> <old>`：按唯一指纹统计新增、未变化和消失结果。
+- `baseline <current> <old>`：按唯一指纹统计新增、未变化和消失结果；`--fail-on-new` 或 `--max-new` 可作为 CI 门禁，拒绝时退出 3。
+- `report <file>`：生成 Markdown 或自包含 HTML 报告；`--baseline` 会将 `baselineState` 写回报告中的结果。
 
 `--output` 将结果写入文件，否则打印到标准输出；`--pretty` 控制 JSON 缩进。CLI 文件操作主要面向 native，核心库 API 仍可用于全部稳定后端。
 
@@ -70,6 +73,6 @@ CI 使用 `moon check --target all` 与 `moon test --target all` 覆盖 wasm、w
 ## 后续演进
 
 1. 补充更多 SARIF 可选字段和官方样例。
-2. 增加 Markdown/HTML 报告和性能基准。
+2. 增加大文件性能基准。
 3. 增加更细粒度的平台兼容性规则。
 4. 在 API 稳定后评估 Mooncakes 发布。

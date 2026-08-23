@@ -178,3 +178,49 @@ pub fn compare_baseline(
   }
   { new_results, unchanged_results, absent_results }
 }
+
+///|
+/// Add SARIF baselineState values to results in the current log.
+///
+/// Results found in the baseline are marked `unchanged`; other current
+/// results are marked `new`. Baseline-only results are represented by the
+/// counts returned from `compare_baseline` and are not added to the current
+/// log.
+pub fn annotate_baseline(current : SarifLog, baseline : SarifLog) -> SarifLog {
+  let baseline_keys : Map[String, Unit] = Map([])
+  for run in baseline.runs {
+    match run.results {
+      Some(results) =>
+        for result in results {
+          baseline_keys[fingerprint(result)] = ()
+        }
+      None => ()
+    }
+  }
+  let runs = current.runs.map(fn(run) {
+    let results = match run.results {
+      Some(items) =>
+        Some(
+          items.map(fn(result) {
+            let state = if baseline_keys.contains(fingerprint(result)) {
+              "unchanged"
+            } else {
+              "new"
+            }
+            {
+              ruleId: result.ruleId,
+              ruleIndex: result.ruleIndex,
+              level: result.level,
+              message: result.message,
+              locations: result.locations,
+              partialFingerprints: result.partialFingerprints,
+              baselineState: Some(state),
+            }
+          }),
+        )
+      None => None
+    }
+    { tool: run.tool, results, automationDetails: run.automationDetails }
+  })
+  { version: current.version, schema: current.schema, runs }
+}

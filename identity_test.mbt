@@ -71,3 +71,39 @@ test "baseline counts new unchanged and absent results" {
   assert_eq(report.unchanged_results, 1)
   assert_eq(report.absent_results, 1)
 }
+
+///|
+test "annotate baseline writes SARIF states" {
+  let baseline = @moonsarif.parse(
+    (
+      #|{
+      #|  "version": "2.1.0",
+      #|  "runs": [{
+      #|    "tool": { "driver": { "name": "Scanner" } },
+      #|    "results": [{ "ruleId": "KEEP", "message": { "text": "same" } }]
+      #|  }]
+      #|}
+    ),
+  )
+  let current = @moonsarif.parse(
+    (
+      #|{
+      #|  "version": "2.1.0",
+      #|  "runs": [{
+      #|    "tool": { "driver": { "name": "Scanner" } },
+      #|    "results": [
+      #|      { "ruleId": "KEEP", "message": { "text": "same" } },
+      #|      { "ruleId": "NEW", "message": { "text": "new" } }
+      #|    ]
+      #|  }]
+      #|}
+    ),
+  )
+  let annotated = @moonsarif.annotate_baseline(current, baseline)
+  guard annotated.runs[0].results is Some(results) else {
+    fail("missing annotated results")
+  }
+  assert_eq(results[0].baselineState, Some("unchanged"))
+  assert_eq(results[1].baselineState, Some("new"))
+  assert_eq(results[1].ruleId, Some("NEW"))
+}

@@ -1,11 +1,11 @@
 ///|
-const VERSION : String = "0.1.0"
+const VERSION : String = "0.2.0"
 
 ///|
 fn print_help() -> Unit {
   println(
     (
-      #|MoonSARIF 0.1.0
+      #|MoonSARIF 0.2.0
       #|
       #|Pure MoonBit SARIF 2.1.0 toolkit.
       #|
@@ -19,6 +19,7 @@ fn print_help() -> Unit {
       #|  merge <file>... [options]   Concatenate compatible SARIF logs
       #|  deduplicate <file> [options] Remove duplicate findings
       #|  baseline <current> <old>    Compare current results with a baseline
+      #|  report <file> [options]      Render a Markdown or HTML report
       #|  version                     Show the current version
       #|  help                        Show this message
       #|
@@ -28,11 +29,16 @@ fn print_help() -> Unit {
       #|  --path <text>               Filter by normalized artifact path
       #|  --output <file>             Write output to a file instead of stdout
       #|  --pretty                    Pretty-print JSON output
+      #|  --format <markdown|html>    Report output format (default: markdown)
+      #|  --baseline <file>           Annotate report findings against a baseline
+      #|  --fail-on-new               Fail baseline checks when new findings exist
+      #|  --max-new <count>           Allow at most this many new findings
       #|
       #|Exit codes:
       #|  0  success (warnings do not fail validation)
       #|  1  validation found SARIF errors
       #|  2  command or input error
+      #|  3  baseline gate rejected new findings
       #|
     ),
   )
@@ -59,6 +65,14 @@ fn has_option(args : ArrayView[String], name : String) -> Bool {
 }
 
 ///|
+fn int_option(args : ArrayView[String], name : String) -> Int? {
+  match option_value(args, [name]) {
+    Some(value) => Some(@string.parse_int(value)) catch { _ => None }
+    None => None
+  }
+}
+
+///|
 fn positional_args(args : ArrayView[String]) -> Array[String] {
   let values : Array[String] = []
   let mut skip_next = false
@@ -69,7 +83,10 @@ fn positional_args(args : ArrayView[String]) -> Array[String] {
       arg == "--rule" ||
       arg == "--rule-id" ||
       arg == "--path" ||
-      arg == "--output" {
+      arg == "--output" ||
+      arg == "--format" ||
+      arg == "--baseline" ||
+      arg == "--max-new" {
       skip_next = true
     } else if !arg.has_prefix("--") {
       values.push(arg)
@@ -235,6 +252,52 @@ fn command_baseline(args : ArrayView[String]) -> Int {
   guard load_log(baseline_path) is Some(baseline) else { return 2 }
   let report = @moonsarif.compare_baseline(current, baseline)
   let output = report.to_json().stringify(indent=2)
+  if !write_output(output, option_value(args, ["--output"])) {
+    return 2
+  }
+  let max_new = int_option(args, "--max-new")
+  if has_option(args, "--max-new") && max_new is None {
+    println("error: --max-new expects a non-negative integer")
+    return 2
+  }
+  if max_new is Some(limit) && (limit < 0 || report.new_results > limit) {
+    return 3
+  }
+  if has_option(args, "--fail-on-new") && report.new_results > 0 {
+    return 3
+  }
+  0
+}
+
+///|
+fn command_report(args : ArrayView[String]) -> Int {
+  let paths = positional_args(args)
+  guard paths is [path] else {
+    println("error: report expects exactly one input SARIF file")
+    print_help()
+    return 2
+  }
+  guard load_log(path) is Some(log) else { return 2 }
+  let log = match option_value(args, ["--baseline"]) {
+    Some(baseline_path) =>
+      match load_log(baseline_path) {
+        Some(baseline) => @moonsarif.annotate_baseline(log, baseline)
+        None => return 2
+      }
+    None => log
+  }
+  let format = match option_value(args, ["--format"]) {
+    Some(value) => value
+    None => "markdown"
+  }
+  let output = match format {
+    "markdown" => @moonsarif.render_markdown(log)
+    "html" => @moonsarif.render_html(log)
+    _ => {
+      println("error: --format must be markdown or html")
+      return 2
+    }
+  }
   if write_output(output, option_value(args, ["--output"])) {
     0
   } else {
@@ -260,6 +323,7 @@ fn main {
     [_, "merge", .. rest] => command_merge(rest)
     [_, "deduplicate", .. rest] => command_deduplicate(rest)
     [_, "baseline", .. rest] => command_baseline(rest)
+    [_, "report", .. rest] => command_report(rest)
     [_, command, ..] => {
       println("error: unknown command '\{command}'")
       print_help()

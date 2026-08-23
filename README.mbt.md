@@ -1,6 +1,6 @@
 # MoonSARIF
 
-纯 MoonBit 实现的 SARIF 2.1.0 解析、校验、筛选、合并、去重与基线比较工具链。
+纯 MoonBit 实现的 SARIF 2.1.0 解析、校验、筛选、合并、去重、基线门禁与报告工具链。
 
 - GitHub：[Noverberrain/MoonSARIF](https://github.com/Noverberrain/MoonSARIF)
 - GitLink：[Wyc060514/moonsarif](https://gitlink.org.cn/Wyc060514/moonsarif)
@@ -17,11 +17,14 @@ MoonSARIF 面向 MoonBit 静态分析器、CI/CD、代码扫描平台和 AI 编�
 - 多日志合并；
 - 确定性结果指纹、同日志去重；
 - 当前日志与历史 baseline 的 new/unchanged/absent 对比；
+- 将 baselineState 写回当前 SARIF 结果；
+- Markdown/HTML 自包含报告；
+- 可在 CI 中拒绝新增问题的 baseline 门禁；
 - 文件型 CLI，便于接入 CI。
 
 ## 当前状态
 
-当前版本为 **0.1.0 验收候选版**。核心库和 CLI 已完成第一轮闭环，支持 wasm、wasm-gc、JavaScript、native 四个稳定后端的检查与测试；文件读写 CLI 主要面向 native 环境，库本身保持跨后端设计。
+当前版本为 **0.2.0 验收候选版**。核心库和 CLI 已完成第一轮闭环，支持 wasm、wasm-gc、JavaScript、native 四个稳定后端的检查与测试；文件读写 CLI 主要面向 native 环境，库本身保持跨后端设计。
 
 项目明确不承诺覆盖 SARIF 规范的所有可选字段，也不替代平台官方的完整 JSON Schema 校验器。对未建模字段，解析时会按当前公开 API 范围处理；提交到具体平台前，仍建议执行平台侧校验。
 
@@ -71,11 +74,23 @@ moon run cmd/main -- merge first.sarif second.sarif --output merged.sarif
 # 删除同一日志中的重复结果
 moon run cmd/main -- deduplicate merged.sarif --output unique.sarif
 
-# 比较当前结果与历史 baseline
-moon run cmd/main -- baseline current.sarif baseline.sarif
+# 比较当前结果与历史 baseline；有新增问题时退出码为 3
+moon run cmd/main -- baseline current.sarif baseline.sarif --fail-on-new
+
+# 限制新增问题数量
+moon run cmd/main -- baseline current.sarif baseline.sarif --max-new 0
+
+# 生成 Markdown 报告
+moon run cmd/main -- report examples/sample.sarif --format markdown
+
+# 生成 HTML 报告
+moon run cmd/main -- report examples/sample.sarif --format html --output report.html
+
+# 报告中标记 new/unchanged
+moon run cmd/main -- report current.sarif --baseline baseline.sarif --format markdown
 ```
 
-CLI 退出码：`0` 表示成功，`1` 表示校验发现 SARIF 错误，`2` 表示命令参数、文件读写或解析错误。CLI 的错误信息当前写入标准输出，以便在不同宿主和后端中保持一致；自动化脚本应以退出码为准。
+CLI 退出码：`0` 表示成功，`1` 表示校验发现 SARIF 错误，`2` 表示命令参数、文件读写或解析错误，`3` 表示 baseline 门禁拒绝新增问题。CLI 的错误信息当前写入标准输出，以便在不同宿主和后端中保持一致；自动化脚本应以退出码为准。
 
 ## 验证
 
@@ -99,7 +114,6 @@ GitHub Actions 会执行格式检查、四个稳定后端的检查/测试以及�
 ## 后续计划
 
 - 补充更多 SARIF 可选字段与官方样例覆盖；
-- 增加 Markdown/HTML 报告输出；
 - 增加大文件性能基准和更细粒度的 GitHub Code Scanning 兼容性检查；
 - 根据 API 稳定性和赛事要求评估 Mooncakes 发布。
 
