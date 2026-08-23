@@ -1,5 +1,15 @@
 # 变更记录
 
+## [0.4.0] - 2026-08-23
+
+### Added
+
+- SARIF Builder API，可创建日志、规则、结果、位置及常用扩展字段；
+- Generic、Github、Strict 三种校验 Profile 与 `validate --profile` CLI；
+- 合法/非法 SARIF fixture 回归集和 CLI 边界回归测试；
+- GitHub Actions Code Scanning 集成示例；
+- `Noverberrain/moonsarif@0.4.0` 发布到 Mooncakes。
+
 ## [0.3.0] - 2026-08-23
 
 ### Added

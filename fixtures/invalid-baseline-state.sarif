@@ -1,0 +1,11 @@
+{
+  "version": "2.1.0",
+  "runs": [{
+    "tool": { "driver": { "name": "InvalidBaseline" } },
+    "results": [{
+      "ruleId": "BASE001",
+      "baselineState": "unknown",
+      "message": { "text": "invalid baseline state" }
+    }]
+  }]
+}

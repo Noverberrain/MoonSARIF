@@ -1,0 +1,31 @@
+name: MoonSARIF Code Scanning
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  sarif:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Install MoonBit
+        env:
+          MOONBIT_INSTALL_VERSION: 0.10.4+2cc641edf
+        run: |
+          curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
+          echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+
+      - name: Validate SARIF
+        run: moon run cmd/main -- github-check examples/github-actions/sample-result.sarif
+
+      - name: Upload SARIF
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: examples/github-actions/sample-result.sarif

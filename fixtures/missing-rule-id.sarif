@@ -1,0 +1,7 @@
+{
+  "version": "2.1.0",
+  "runs": [{
+    "tool": { "driver": { "name": "MissingRuleId" } },
+    "results": [{ "message": { "text": "rule id is missing" } }]
+  }]
+}

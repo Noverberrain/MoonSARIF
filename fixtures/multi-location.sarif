@@ -1,0 +1,17 @@
+{
+  "version": "2.1.0",
+  "runs": [{
+    "tool": { "driver": { "name": "LocationTool" } },
+    "results": [{
+      "ruleId": "LOC001",
+      "message": { "text": "related source locations" },
+      "locations": [
+        { "physicalLocation": { "artifactLocation": { "uri": "src/main.mbt" }, "region": { "startLine": 4, "startColumn": 1 } } },
+        { "physicalLocation": { "artifactLocation": { "uri": "src/lib.mbt" }, "region": { "startLine": 9, "endLine": 10 } } }
+      ],
+      "relatedLocations": [
+        { "physicalLocation": { "artifactLocation": { "uri": "README.md" }, "region": { "startLine": 2 } } }
+      ]
+    }]
+  }]
+}

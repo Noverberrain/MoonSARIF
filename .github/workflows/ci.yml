@@ -48,7 +48,10 @@ jobs:
           moon run cmd/main -- report examples/sample.sarif --format html --output "$RUNNER_TEMP/report.html"
 
       - name: Run CLI regression tests
-        run: bash tests/cli_smoke.sh
+        run: |
+          bash tests/cli_smoke.sh
+          bash tests/fixture_regression.sh
+          bash tests/cli_edge_cases.sh
 
       - name: Run small performance benchmark
         run: python3 tools/benchmark.py --results 1000

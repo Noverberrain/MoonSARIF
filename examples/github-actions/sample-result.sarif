@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [{
+    "tool": { "driver": { "name": "MoonSARIF Example", "rules": [{ "id": "EX001" }] } },
+    "results": [{
+      "ruleId": "EX001",
+      "level": "warning",
+      "message": { "text": "Example Code Scanning finding" },
+      "locations": [{ "physicalLocation": { "artifactLocation": { "uri": "src/main.mbt" }, "region": { "startLine": 1, "startColumn": 1 } } }]
+    }]
+  }]
+}

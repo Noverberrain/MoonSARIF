@@ -1,11 +1,11 @@
 ///|
-const VERSION : String = "0.3.0"
+const VERSION : String = "0.4.0"
 
 ///|
 fn print_help() -> Unit {
   println(
     (
-      #|MoonSARIF 0.3.0
+      #|MoonSARIF 0.4.0
       #|
       #|Pure MoonBit SARIF 2.1.0 toolkit.
       #|
@@ -13,7 +13,7 @@ fn print_help() -> Unit {
       #|  moonsarif <command> [arguments] [options]
       #|
       #|Commands:
-      #|  validate <file>             Validate a SARIF log
+      #|  validate <file> [options]   Validate a SARIF log
       #|  github-check <file>         Check GitHub Code Scanning compatibility
       #|  summary <file>              Print aggregate result counts
       #|  filter <file> [options]     Keep matching results and print SARIF
@@ -31,6 +31,7 @@ fn print_help() -> Unit {
       #|  --output <file>             Write output to a file instead of stdout
       #|  --pretty                    Pretty-print JSON output
       #|  --format <markdown|html>    Report output format (default: markdown)
+      #|  --profile <generic|github|strict> Validation profile for validate
       #|  --baseline <file>           Annotate report findings against a baseline
       #|  --fail-on-new               Fail baseline checks when new findings exist
       #|  --max-new <count>           Allow at most this many new findings
@@ -86,6 +87,7 @@ fn positional_args(args : ArrayView[String]) -> Array[String] {
       arg == "--path" ||
       arg == "--output" ||
       arg == "--format" ||
+      arg == "--profile" ||
       arg == "--baseline" ||
       arg == "--max-new" {
       skip_next = true
@@ -131,6 +133,11 @@ fn write_output(content : String, output : String?) -> Bool {
 }
 
 ///|
+fn parse_profile(value : String) -> @moonsarif.ValidationProfile? {
+  @moonsarif.parse_validation_profile(value)
+}
+
+///|
 fn command_validate(args : ArrayView[String]) -> Int {
   let paths = positional_args(args)
   guard paths is [path] else {
@@ -139,7 +146,18 @@ fn command_validate(args : ArrayView[String]) -> Int {
     return 2
   }
   guard load_log(path) is Some(log) else { return 2 }
-  let report = @moonsarif.validate(log)
+  let profile = match option_value(args, ["--profile"]) {
+    Some(value) =>
+      match parse_profile(value) {
+        Some(profile) => profile
+        None => {
+          println("error: --profile must be generic, github, or strict")
+          return 2
+        }
+      }
+    None => @moonsarif.generic_validation_profile()
+  }
+  let report = @moonsarif.validate_with_profile(log, profile)
   let output = report.to_json().stringify(indent=2)
   if !write_output(output, option_value(args, ["--output"])) {
     return 2

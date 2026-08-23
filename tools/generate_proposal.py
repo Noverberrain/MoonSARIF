@@ -146,7 +146,7 @@ def build_pdf() -> None:
             Paragraph("项目性质", styles["table_key"]),
             Paragraph("原创实现，不移植第三方源码", styles["table_value"]),
             Paragraph("当前基础", styles["table_key"]),
-            Paragraph("0.3.0 验收候选版 · 20 个库级测试", styles["table_value"]),
+            Paragraph("0.4.0 · Builder、校验 Profile 与 CI 集成 · 25 个库级测试", styles["table_value"]),
         ],
         [
             Paragraph("GitHub", styles["table_key"]),

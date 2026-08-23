@@ -17,15 +17,31 @@ pub fn filter_results(SarifLog, level? : String, rule_id? : String, path_contain
 
 pub fn fingerprint(SarifResult) -> String
 
+pub fn generic_validation_profile() -> ValidationProfile
+
+pub fn github_validation_profile() -> ValidationProfile
+
+pub fn make_location(uri~ : String, start_line~ : Int, start_column? : Int, end_line? : Int, end_column? : Int) -> Location
+
+pub fn make_suppression(kind~ : String, justification? : String, location? : Location, guid? : String) -> Suppression
+
 pub fn merge(ArrayView[SarifLog]) -> SarifLog?
+
+pub fn message_markdown(String) -> Message
+
+pub fn message_text(String) -> Message
 
 pub fn normalize_path(StringView) -> String
 
 pub fn parse(StringView) -> SarifLog raise
 
+pub fn parse_validation_profile(String) -> ValidationProfile?
+
 pub fn render_html(SarifLog) -> String
 
 pub fn render_markdown(SarifLog) -> String
+
+pub fn strict_validation_profile() -> ValidationProfile
 
 pub fn stringify(SarifLog, pretty? : Bool) -> String
 
@@ -34,6 +50,8 @@ pub fn summarize(SarifLog) -> SarifSummary
 pub fn validate(SarifLog) -> ValidationReport
 
 pub fn validate_github_compatibility(SarifLog) -> ValidationReport
+
+pub fn validate_with_profile(SarifLog, ValidationProfile) -> ValidationReport
 
 // Errors
 
@@ -80,6 +98,25 @@ pub struct Location {
   physicalLocation : PhysicalLocation?
   message : Message?
 } derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub struct LogBuilder {
+  mut tool : ToolComponent
+  results : Array[SarifResult]
+  mut schema : String?
+}
+pub fn LogBuilder::add_result(Self, rule_id? : String, level? : String, message~ : Message, location? : Location) -> Int
+pub fn LogBuilder::add_rule(Self, id~ : String, name? : String, help_uri? : String) -> Unit
+pub fn LogBuilder::finish(Self) -> SarifLog
+pub fn LogBuilder::new(tool_name~ : String, tool_version? : String) -> Self
+pub fn LogBuilder::set_baseline_state(Self, Int, String) -> Unit
+pub fn LogBuilder::set_fingerprints(Self, Int, Map[String, String]) -> Unit
+pub fn LogBuilder::set_fixes(Self, Int, Array[Fix]) -> Unit
+pub fn LogBuilder::set_locations(Self, Int, Array[Location]) -> Unit
+pub fn LogBuilder::set_partial_fingerprints(Self, Int, Map[String, String]) -> Unit
+pub fn LogBuilder::set_properties(Self, Int, Map[String, Json]) -> Unit
+pub fn LogBuilder::set_related_locations(Self, Int, Array[Location]) -> Unit
+pub fn LogBuilder::set_schema(Self, String) -> Unit
+pub fn LogBuilder::set_suppressions(Self, Int, Array[Suppression]) -> Unit
 
 pub struct Message {
   text : String?
@@ -182,6 +219,12 @@ pub struct ValidationIssue {
   code : String
   path : String
   message : String
+} derive(Eq, ToJson, @debug.Debug)
+
+pub enum ValidationProfile {
+  Generic
+  Github
+  Strict
 } derive(Eq, ToJson, @debug.Debug)
 
 pub struct ValidationReport {

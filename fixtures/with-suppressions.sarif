@@ -1,0 +1,11 @@
+{
+  "version": "2.1.0",
+  "runs": [{
+    "tool": { "driver": { "name": "SuppressionTool", "rules": [{ "id": "SUP001" }] } },
+    "results": [{
+      "ruleId": "SUP001",
+      "message": { "text": "known limitation" },
+      "suppressions": [{ "kind": "inSource", "justification": "Reviewed and accepted" }]
+    }]
+  }]
+}

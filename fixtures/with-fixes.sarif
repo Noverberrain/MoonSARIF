@@ -1,0 +1,21 @@
+{
+  "version": "2.1.0",
+  "runs": [{
+    "tool": { "driver": { "name": "FixTool", "rules": [{ "id": "FIX001" }] } },
+    "results": [{
+      "ruleId": "FIX001",
+      "message": { "text": "replace unsafe expression" },
+      "locations": [{ "physicalLocation": { "artifactLocation": { "uri": "src/main.mbt" }, "region": { "startLine": 12, "startColumn": 3, "endLine": 12, "endColumn": 8 } } }],
+      "fixes": [{
+        "description": { "text": "Use a checked call" },
+        "artifactChanges": [{
+          "artifactLocation": { "uri": "src/main.mbt" },
+          "replacements": [{
+            "deletedRegion": { "startLine": 12, "startColumn": 3, "endLine": 12, "endColumn": 8 },
+            "insertedContent": { "text": "checked_call()" }
+          }]
+        }]
+      }]
+    }]
+  }]
+}

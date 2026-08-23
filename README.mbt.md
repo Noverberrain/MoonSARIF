@@ -1,6 +1,6 @@
 # MoonSARIF
 
-纯 MoonBit 实现的 SARIF 2.1.0 解析、校验、筛选、合并、去重、基线门禁与报告工具链。
+纯 MoonBit 实现的 SARIF 2.1.0 生成、解析、校验、筛选、合并、去重、基线门禁与报告工具链。
 
 - GitHub：[Noverberrain/MoonSARIF](https://github.com/Noverberrain/MoonSARIF)
 - GitLink：[Wyc060514/moonsarif](https://gitlink.org.cn/Wyc060514/moonsarif)
@@ -22,12 +22,14 @@ MoonSARIF 面向 MoonBit 静态分析器、CI/CD、代码扫描平台和 AI 编�
 - Markdown/HTML 自包含报告；
 - 可在 CI 中拒绝新增问题的 baseline 门禁；
 - GitHub Code Scanning 上传前兼容性检查；
+- SARIF Builder，可从 MoonBit 静态分析器直接创建日志、规则、结果和位置；
+- Generic、Github、Strict 三种校验 Profile；
 - relatedLocations、fingerprints、suppressions、fixes、properties 等常用结果字段；
 - 文件型 CLI，便于接入 CI。
 
 ## 当前状态
 
-当前版本为 **0.3.0 验收候选版**。核心库和 CLI 已完成第一轮闭环，支持 wasm、wasm-gc、JavaScript、native 四个稳定后端的检查与测试；文件读写 CLI 主要面向 native 环境，库本身保持跨后端设计。
+当前版本为 **0.4.0**。核心库和 CLI 已完成第一轮闭环，支持 wasm、wasm-gc、JavaScript、native 四个稳定后端的检查与测试；文件读写 CLI 主要面向 native 环境，库本身保持跨后端设计。
 
 项目明确不承诺覆盖 SARIF 规范的所有可选字段，也不替代平台官方的完整 JSON Schema 校验器。对未建模字段，解析时会按当前公开 API 范围处理；提交到具体平台前，仍建议执行平台侧校验。
 
@@ -58,7 +60,37 @@ test {
 }
 ```
 
-### CLI
+### Builder
+
+```mbt nocheck
+let builder = @moonsarif.LogBuilder::new(tool_name="MoonLint", tool_version="0.4.0")
+builder.add_rule(id="MB001")
+let index = builder.add_result(
+  rule_id="MB001",
+  level="warning",
+  message=@moonsarif.message_text("unused declaration"),
+  location=@moonsarif.make_location(uri="src/main.mbt", start_line=12),
+)
+builder.set_partial_fingerprints(index, { "primaryLocationLineHash": "example" })
+let log = builder.finish()
+```
+
+Builder 固定生成 SARIF 2.1.0，并可继续设置 related locations、fingerprints、suppressions、fixes、properties 和 baseline state。
+
+### 校验 Profile
+
+```bash
+moon run cmd/main -- validate examples/sample.sarif --profile generic
+moon run cmd/main -- validate examples/sample.sarif --profile github
+moon run cmd/main -- validate examples/sample.sarif --profile strict
+```
+
+`generic` 执行通用语义检查，`github` 执行 Code Scanning 上传前检查，`strict` 额外要求结果有声明规则、位置和相对 artifact URI，并拒绝重复指纹。旧的 `github-check` 命令继续可用。
+
+### GitHub Actions
+
+可复制 [GitHub Actions 示例](examples/github-actions/README.md)，或直接使用 `examples/github-actions/moonsarif-code-scanning.yml`。
+
 
 ```bash
 # 检查 SARIF；发现结构/语义错误时退出码为 1
@@ -122,7 +154,7 @@ GitHub Actions 会执行格式检查、四个稳定后端的检查/测试、CLI 
 - 补充更多 SARIF 可选字段与官方样例覆盖；
 - 增加更细粒度的平台兼容规则和真实上传回归样例；
 - 评估流式解析/写出和大文件优化；
-- 已发布 `Noverberrain/moonsarif@0.3.0`；后续根据 API 稳定性和赛事要求持续维护。
+- 已发布 `Noverberrain/moonsarif@0.4.0`；后续根据 API 稳定性和赛事要求持续维护。
 
 ## 开源与 AI 使用说明
 

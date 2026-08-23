@@ -1,0 +1,11 @@
+{
+  "version": "2.1.0",
+  "runs": [{
+    "tool": { "driver": { "name": "InvalidRegion" } },
+    "results": [{
+      "ruleId": "REG001",
+      "message": { "text": "end line precedes start line" },
+      "locations": [{ "physicalLocation": { "artifactLocation": { "uri": "src/main.mbt" }, "region": { "startLine": 20, "endLine": 10 } } }]
+    }]
+  }]
+}

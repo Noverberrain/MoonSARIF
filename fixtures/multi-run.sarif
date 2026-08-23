@@ -1,0 +1,13 @@
+{
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": { "driver": { "name": "ToolA" } },
+      "results": [{ "ruleId": "A001", "message": { "text": "first" } }]
+    },
+    {
+      "tool": { "driver": { "name": "ToolB" } },
+      "results": [{ "ruleId": "B001", "message": { "text": "second" } }]
+    }
+  ]
+}
