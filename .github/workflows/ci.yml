@@ -38,6 +38,7 @@ jobs:
         run: |
           moon run cmd/main -- version
           moon run cmd/main -- validate examples/sample.sarif
+          moon run cmd/main -- github-check examples/sample.sarif
           moon run cmd/main -- summary examples/sample.sarif --pretty
           moon run cmd/main -- filter examples/sample.sarif --level warning --output "$RUNNER_TEMP/filtered.sarif"
           moon run cmd/main -- merge examples/sample.sarif examples/sample.sarif --output "$RUNNER_TEMP/merged.sarif"
@@ -45,6 +46,12 @@ jobs:
           moon run cmd/main -- baseline "$RUNNER_TEMP/unique.sarif" examples/sample.sarif --fail-on-new
           moon run cmd/main -- report examples/sample.sarif --format markdown --output "$RUNNER_TEMP/report.md"
           moon run cmd/main -- report examples/sample.sarif --format html --output "$RUNNER_TEMP/report.html"
+
+      - name: Run CLI regression tests
+        run: bash tests/cli_smoke.sh
+
+      - name: Run small performance benchmark
+        run: python3 tools/benchmark.py --results 1000
 
       - name: Verify formatting
         run: |

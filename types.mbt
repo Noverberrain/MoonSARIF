@@ -66,8 +66,43 @@ pub struct SarifResult {
   level : String?
   message : Message
   locations : Array[Location]?
+  relatedLocations : Array[Location]?
   partialFingerprints : Map[String, String]?
+  fingerprints : Map[String, String]?
+  suppressions : Array[Suppression]?
+  fixes : Array[Fix]?
+  properties : Map[String, Json]?
   baselineState : String?
+} derive(Debug, Eq, ToJson, FromJson)
+
+///|
+/// A suppression attached to a SARIF result.
+pub struct Suppression {
+  kind : String
+  justification : String?
+  location : Location?
+  guid : String?
+} derive(Debug, Eq, ToJson, FromJson)
+
+///|
+/// A proposed fix attached to a SARIF result.
+pub struct Fix {
+  description : Message?
+  artifactChanges : Array[ArtifactChange]?
+} derive(Debug, Eq, ToJson, FromJson)
+
+///|
+/// A change to one artifact proposed by a fix.
+pub struct ArtifactChange {
+  artifactLocation : ArtifactLocation
+  replacements : Array[Replacement]
+} derive(Debug, Eq, ToJson, FromJson)
+
+///|
+/// A replacement within an artifact.
+pub struct Replacement {
+  deletedRegion : Region
+  insertedContent : ArtifactContent?
 } derive(Debug, Eq, ToJson, FromJson)
 
 ///|

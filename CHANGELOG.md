@@ -1,15 +1,14 @@
 # 变更记录
 
-## [0.2.0] - 2026-08-23
+## [0.3.0] - 2026-08-23
 
 ### Added
 
-- `annotate_baseline`：将当前结果标记为 `new` 或 `unchanged`；
-- `report` CLI 及 Markdown/HTML 自包含报告渲染 API；
-- `--fail-on-new`、`--max-new` baseline CI 门禁，拒绝时返回退出码 3；
-- 报告、baseline 标注和跨平台位置展示测试；
-- README 与架构文档中的 CI/报告使用示例。
-
+- GitHub Code Scanning 上传前兼容性检查及 `github-check` CLI；
+- `relatedLocations`、`fingerprints`、`suppressions`、`fixes`、`properties` 等常用 SARIF 结果字段；
+- CLI 回归 smoke test，覆盖报告、baseline 门禁和兼容性检查；
+- 可复现的小型性能基准脚本，默认测量 1000 条结果；
+- 架构、README 和初审申报材料同步更新。
 
 ## [0.1.0] - 2026-08-23
 
@@ -29,4 +28,4 @@
 - 当前不是完整 SARIF JSON Schema 验证器；
 - CLI 文件读写主要面向 native 后端；
 - 指纹当前使用首个物理位置，尚未覆盖所有平台专用指纹规则；
-- 大文件性能基准和 Mooncakes 发布仍需后续评估。
+- 流式处理/大文件优化、更多平台兼容规则和 Mooncakes 发布仍需后续评估。

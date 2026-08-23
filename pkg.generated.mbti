@@ -33,9 +33,16 @@ pub fn summarize(SarifLog) -> SarifSummary
 
 pub fn validate(SarifLog) -> ValidationReport
 
+pub fn validate_github_compatibility(SarifLog) -> ValidationReport
+
 // Errors
 
 // Types and methods
+pub struct ArtifactChange {
+  artifactLocation : ArtifactLocation
+  replacements : Array[Replacement]
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
 pub struct ArtifactContent {
   text : String?
   binary : String?
@@ -58,6 +65,11 @@ pub enum BaselineState {
   Unchanged
   Absent
 } derive(Eq, ToJson, @debug.Debug)
+
+pub struct Fix {
+  description : Message?
+  artifactChanges : Array[ArtifactChange]?
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
 
 pub enum IssueSeverity {
   IssueError
@@ -85,6 +97,11 @@ pub struct Region {
   endLine : Int?
   endColumn : Int?
   snippet : ArtifactContent?
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub struct Replacement {
+  deletedRegion : Region
+  insertedContent : ArtifactContent?
 } derive(Eq, ToJson, @debug.Debug, @json.FromJson)
 
 pub struct ReportingDescriptor {
@@ -120,7 +137,12 @@ pub struct SarifResult {
   level : String?
   message : Message
   locations : Array[Location]?
+  relatedLocations : Array[Location]?
   partialFingerprints : Map[String, String]?
+  fingerprints : Map[String, String]?
+  suppressions : Array[Suppression]?
+  fixes : Array[Fix]?
+  properties : Map[String, Json]?
   baselineState : String?
 } derive(Eq, ToJson, @debug.Debug, @json.FromJson)
 
@@ -134,6 +156,13 @@ pub struct SarifSummary {
   unknown_level_count : Int
   unique_rule_count : Int
 } derive(Eq, ToJson, @debug.Debug)
+
+pub struct Suppression {
+  kind : String
+  justification : String?
+  location : Location?
+  guid : String?
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
 
 pub struct Tool {
   driver : ToolComponent

@@ -20,11 +20,13 @@ MoonSARIF 面向 MoonBit 静态分析器、CI/CD、代码扫描平台和 AI 编�
 - 将 baselineState 写回当前 SARIF 结果；
 - Markdown/HTML 自包含报告；
 - 可在 CI 中拒绝新增问题的 baseline 门禁；
+- GitHub Code Scanning 上传前兼容性检查；
+- relatedLocations、fingerprints、suppressions、fixes、properties 等常用结果字段；
 - 文件型 CLI，便于接入 CI。
 
 ## 当前状态
 
-当前版本为 **0.2.0 验收候选版**。核心库和 CLI 已完成第一轮闭环，支持 wasm、wasm-gc、JavaScript、native 四个稳定后端的检查与测试；文件读写 CLI 主要面向 native 环境，库本身保持跨后端设计。
+当前版本为 **0.3.0 验收候选版**。核心库和 CLI 已完成第一轮闭环，支持 wasm、wasm-gc、JavaScript、native 四个稳定后端的检查与测试；文件读写 CLI 主要面向 native 环境，库本身保持跨后端设计。
 
 项目明确不承诺覆盖 SARIF 规范的所有可选字段，也不替代平台官方的完整 JSON Schema 校验器。对未建模字段，解析时会按当前公开 API 范围处理；提交到具体平台前，仍建议执行平台侧校验。
 
@@ -88,6 +90,9 @@ moon run cmd/main -- report examples/sample.sarif --format html --output report.
 
 # 报告中标记 new/unchanged
 moon run cmd/main -- report current.sarif --baseline baseline.sarif --format markdown
+
+# 检查 GitHub Code Scanning 常见兼容性问题
+moon run cmd/main -- github-check current.sarif
 ```
 
 CLI 退出码：`0` 表示成功，`1` 表示校验发现 SARIF 错误，`2` 表示命令参数、文件读写或解析错误，`3` 表示 baseline 门禁拒绝新增问题。CLI 的错误信息当前写入标准输出，以便在不同宿主和后端中保持一致；自动化脚本应以退出码为准。
@@ -101,7 +106,7 @@ moon test --target all --deny-warn
 moon info
 ```
 
-GitHub Actions 会执行格式检查、四个稳定后端的检查/测试以及公共接口生成检查。
+GitHub Actions 会执行格式检查、四个稳定后端的检查/测试、CLI 回归测试、1000 条结果的小型性能基准以及公共接口生成检查。
 
 ## 文档
 
@@ -114,7 +119,8 @@ GitHub Actions 会执行格式检查、四个稳定后端的检查/测试以及�
 ## 后续计划
 
 - 补充更多 SARIF 可选字段与官方样例覆盖；
-- 增加大文件性能基准和更细粒度的 GitHub Code Scanning 兼容性检查；
+- 增加更细粒度的平台兼容规则和真实上传回归样例；
+- 评估流式解析/写出和大文件优化；
 - 根据 API 稳定性和赛事要求评估 Mooncakes 发布。
 
 ## 开源与 AI 使用说明

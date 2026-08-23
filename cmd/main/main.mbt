@@ -1,11 +1,11 @@
 ///|
-const VERSION : String = "0.2.0"
+const VERSION : String = "0.3.0"
 
 ///|
 fn print_help() -> Unit {
   println(
     (
-      #|MoonSARIF 0.2.0
+      #|MoonSARIF 0.3.0
       #|
       #|Pure MoonBit SARIF 2.1.0 toolkit.
       #|
@@ -14,6 +14,7 @@ fn print_help() -> Unit {
       #|
       #|Commands:
       #|  validate <file>             Validate a SARIF log
+      #|  github-check <file>         Check GitHub Code Scanning compatibility
       #|  summary <file>              Print aggregate result counts
       #|  filter <file> [options]     Keep matching results and print SARIF
       #|  merge <file>... [options]   Concatenate compatible SARIF logs
@@ -139,6 +140,27 @@ fn command_validate(args : ArrayView[String]) -> Int {
   }
   guard load_log(path) is Some(log) else { return 2 }
   let report = @moonsarif.validate(log)
+  let output = report.to_json().stringify(indent=2)
+  if !write_output(output, option_value(args, ["--output"])) {
+    return 2
+  }
+  if report.is_valid() {
+    0
+  } else {
+    1
+  }
+}
+
+///|
+fn command_github_check(args : ArrayView[String]) -> Int {
+  let paths = positional_args(args)
+  guard paths is [path] else {
+    println("error: github-check expects exactly one SARIF file")
+    print_help()
+    return 2
+  }
+  guard load_log(path) is Some(log) else { return 2 }
+  let report = @moonsarif.validate_github_compatibility(log)
   let output = report.to_json().stringify(indent=2)
   if !write_output(output, option_value(args, ["--output"])) {
     return 2
@@ -318,6 +340,7 @@ fn main {
       0
     }
     [_, "validate", .. rest] => command_validate(rest)
+    [_, "github-check", .. rest] => command_github_check(rest)
     [_, "summary", .. rest] => command_summary(rest)
     [_, "filter", .. rest] => command_filter(rest)
     [_, "merge", .. rest] => command_merge(rest)

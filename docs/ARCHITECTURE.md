@@ -11,6 +11,7 @@ MoonSARIF 采用“类型模型 + 纯函数工具链 + CLI 适配层”的结构
 - `path.mbt`：跨平台 artifact URI/路径归一化。
 - `identity.mbt`：结果消息/位置归一化、确定性指纹、去重、baseline 比较和 `baselineState` 标注。
 - `report.mbt`：Markdown/HTML 报告渲染与安全转义。
+- `compatibility.mbt`：GitHub Code Scanning 常见兼容性规则。
 - `cmd/main`：命令行适配层，负责参数、文件、输出和退出码，不重复实现领域逻辑。
 
 ## 数据流
@@ -39,6 +40,7 @@ parse ──► SarifLog ──► validate / summarize / filter / merge
 - `deduplicate <file>`：对每个 run 保留首次出现的结果指纹。
 - `baseline <current> <old>`：按唯一指纹统计新增、未变化和消失结果；`--fail-on-new` 或 `--max-new` 可作为 CI 门禁，拒绝时退出 3。
 - `report <file>`：生成 Markdown 或自包含 HTML 报告；`--baseline` 会将 `baselineState` 写回报告中的结果。
+- `github-check <file>`：在通用校验外检查 GitHub Code Scanning 常见要求，如 ruleId、位置、artifact URI 和 baselineState。
 
 `--output` 将结果写入文件，否则打印到标准输出；`--pretty` 控制 JSON 缩进。CLI 文件操作主要面向 native，核心库 API 仍可用于全部稳定后端。
 

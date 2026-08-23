@@ -213,7 +213,12 @@ pub fn annotate_baseline(current : SarifLog, baseline : SarifLog) -> SarifLog {
               level: result.level,
               message: result.message,
               locations: result.locations,
+              relatedLocations: result.relatedLocations,
               partialFingerprints: result.partialFingerprints,
+              fingerprints: result.fingerprints,
+              suppressions: result.suppressions,
+              fixes: result.fixes,
+              properties: result.properties,
               baselineState: Some(state),
             }
           }),

@@ -18,7 +18,12 @@ test "result path matching normalizes separators" {
         message: None,
       },
     ]),
+    relatedLocations: None,
     partialFingerprints: None,
+    fingerprints: None,
+    suppressions: None,
+    fixes: None,
+    properties: None,
     baselineState: None,
   }
   assert_true(result_has_path(result, "nested/file"))
